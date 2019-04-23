@@ -1,10 +1,11 @@
-package com.mwk.ioc.service;
+package com.mwk.ioc.dao;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
 import com.mwk.base.UnitTestBase;
+import com.mwk.ioc.service.PersonService;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class PersonDaoTest extends UnitTestBase {
