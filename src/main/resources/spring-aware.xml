@@ -5,7 +5,8 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd"
         default-init-method="defaultStart" default-destroy-method="defaultStop">
 
-	<bean id="beanLifeCycle" class="com.mwk.bean.property.BeanLifeCycle"
-		init-method="start" destroy-method="stop"></bean>
+	<bean id="awareApplicationContext" class="com.mwk.bean.aware.AwareApplicationContext"></bean>
+	
+	<bean id="awareBeanName" class="com.mwk.bean.aware.AwareBeanName"></bean>
 
 </beans>

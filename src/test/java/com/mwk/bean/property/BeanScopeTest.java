@@ -1,10 +1,11 @@
-package com.mwk.bean;
+package com.mwk.bean.property;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
 import com.mwk.base.UnitTestBase;
+import com.mwk.bean.property.BeanScope;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class BeanScopeTest extends UnitTestBase {

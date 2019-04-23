@@ -1,4 +1,4 @@
-package com.mwk.bean;
+package com.mwk.bean.property;
 
 import java.util.Hashtable;
 

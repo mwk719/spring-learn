@@ -1,4 +1,4 @@
-package com.mwk.bean;
+package com.mwk.bean.property;
 
 public class BeanScope {
 

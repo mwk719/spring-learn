@@ -1,4 +1,4 @@
-package com.mwk.bean;
+package com.mwk.bean.property;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
