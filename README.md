@@ -26,3 +26,9 @@ spring底层学习demo
 1. BeanNameAware  可以获取容器中bean的名称
 2. ApplicationContextAware  当前的applicationContext， 这也可以调用容器的服务
 
+###  4. Bean的自动装配
+
+1. byName  根据属性名称自动装配-set注入
+2. byType 在容器中查找指定属性类型进行装配-set注入
+3. constructor 与byType类似-构造方法注入
+
