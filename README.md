@@ -32,3 +32,9 @@ spring底层学习demo
 2. byType 在容器中查找指定属性类型进行装配-set注入
 3. constructor 与byType类似-构造方法注入
 
+###  5. Bean的注解
+
+1. @Autowired 可以注解list和map；
+2. @Order(1) 改变注解顺序，list中有效
+3. @Qualifier("beanServiceImplOne") 一个接口有多个实现，指定其中一个
+
