@@ -38,3 +38,8 @@ spring底层学习demo
 2. @Order(1) 改变注解顺序，list中有效
 3. @Qualifier("beanServiceImplOne") 一个接口有多个实现，指定其中一个
 
+###  6. try catch return
+
+1. 只要有finally，无论try中是否有return，finally中的代码都会被执行！
+   并且会在return之前被执行
+

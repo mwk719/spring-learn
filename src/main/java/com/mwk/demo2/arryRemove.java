@@ -2,8 +2,6 @@ package com.mwk.demo2;
 
 import java.util.Arrays;
 
-import org.yaml.snakeyaml.util.ArrayUtils;
-
 public class arryRemove {
 
     /**
