@@ -11,12 +11,20 @@ public class Person {
 
     private BigDecimal money;
 
+    private Integer age;
+
     public Person() {
     }
 
     public Person(String name, BigDecimal money) {
         this.name = name;
         this.money = money;
+    }
+
+    public Person(String name, BigDecimal money, Integer age) {
+        this.name = name;
+        this.money = money;
+        this.age = age;
     }
 
     public void say() {
