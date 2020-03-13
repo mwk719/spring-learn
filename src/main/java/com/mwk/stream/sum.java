@@ -23,11 +23,11 @@ public class sum {
 		System.out.println("集合中最大值：" + collect.getMin());
 		System.out.println("集合中平均值：" + collect.getAverage());
 
-		Person p1 = new Person("张三", new BigDecimal("10.0"));
-		Person p2 = new Person("王五", new BigDecimal("10.0"));
-		Person p3 = new Person("李四", new BigDecimal("10.0"));
-		Person p4 = new Person("王五", new BigDecimal("10.0"));
-		Person p5 = new Person("赵六", new BigDecimal("10.0"));
+		Person p1 = new Person("张三", new BigDecimal("10.0"),1);
+		Person p2 = new Person("王五", new BigDecimal("10.0"),1);
+		Person p3 = new Person("李四", new BigDecimal("10.0"),2);
+		Person p4 = new Person("王五", new BigDecimal("10.0"),2);
+		Person p5 = new Person("赵六", new BigDecimal("10.0"),3);
 		List<Person> pList = new ArrayList<>();
 		pList.add(p1);
 		pList.add(p2);
@@ -39,6 +39,9 @@ public class sum {
 		BigDecimal reduce = pList.stream().map(Person::getMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
 		System.out.println("工资总计：" + reduce);
 
+		//数字求和
+		Integer sum= pList.stream().mapToInt(Person::getAge).sum();
+		System.out.println(sum);
 	}
 
 }
