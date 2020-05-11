@@ -3,10 +3,7 @@ package com.mwk.stream;
 import com.mwk.entity.Person;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.IntSummaryStatistics;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class sum {
@@ -36,11 +33,11 @@ public class sum {
 		pList.add(p5);
 
 		//对象属性求和
-		BigDecimal reduce = pList.stream().map(Person::getMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal reduce = pList.stream().map(Person::getMoney).reduce(BigDecimal.ZERO, BigDecimal::divide);
 		System.out.println("工资总计：" + reduce);
 
 		//数字求和
-		Integer sum= pList.stream().mapToInt(Person::getAge).sum();
+		double sum= pList.stream().mapToInt(Person::getAge).average().getAsDouble();
 		System.out.println(sum);
 	}
 
