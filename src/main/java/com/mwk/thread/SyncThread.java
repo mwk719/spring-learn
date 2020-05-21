@@ -58,7 +58,7 @@ public class SyncThread extends Thread {
 	}
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		SyncThread syncThread = new SyncThread();
 		Thread t1 = new Thread(syncThread, "write");
 		Thread t2 = new Thread(syncThread, "read");
@@ -66,7 +66,8 @@ public class SyncThread extends Thread {
 		System.out.println("是否存活："+t2.isAlive());
 		t1.start();
 		System.out.println("活跃线程数："+activeCount());
-
+		Thread.sleep(5000L);
+		System.out.println("稍等-是否存活："+t2.isAlive());
 	}
 
 }
