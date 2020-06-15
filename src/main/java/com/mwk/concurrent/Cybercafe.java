@@ -1,4 +1,4 @@
-package com.mwk.thread;
+package com.mwk.concurrent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,12 +16,12 @@ import java.util.concurrent.Semaphore;
 public class Cybercafe {
 
 	/**
-	 * 电脑数量
+	 * 电脑数量-可容纳并发
 	 */
 	private static int computerCount = 5;
 
 	/**
-	 * 客户数量
+	 * 客户数量-最大并发
 	 */
 	private static int customerCount = 8;
 

@@ -1,4 +1,4 @@
-package com.mwk.thread;
+package com.mwk.concurrent;
 
 import java.util.concurrent.Semaphore;
 
