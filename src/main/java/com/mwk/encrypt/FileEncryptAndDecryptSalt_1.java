@@ -33,7 +33,7 @@ public class FileEncryptAndDecryptSalt_1 {
 
 	public static void main(String[] args) {
 		//原文件
-		File src = new File("E:\\test\\阿里巴巴Java开发.pdf");
+		File src = new File("E:\\test\\fiddler5.zip");
 		//目标文件
 		File dest = new File("E:\\test\\阿里巴巴Java开发.pdf.mwk");
 
@@ -43,7 +43,7 @@ public class FileEncryptAndDecryptSalt_1 {
 		System.out.println("加密时间：" + (System.currentTimeMillis() - start));
 
 		//生成解byte文件
-//		decryptFile(encryptFilePath);
+//		decryptFile(dest);
 //		System.out.println("解密时间：" + (System.currentTimeMillis() - start));
 	}
 
