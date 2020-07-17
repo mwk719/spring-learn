@@ -7,6 +7,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
+ * 博客路径
+ * https://minwk.top/FileEncryptAndDecrypt3.0/
+ *
  * 假设你已经看了我之前的两篇博客
  * [字节流运算实现文件的加密解密1.0](https://minwk.top/FileEncryptAndDecrypt1.0/)
  * [字节流运算实现文件的加密解密2.0](https://minwk.top/FileEncryptAndDecrypt2.0/)
@@ -21,33 +24,7 @@ import java.util.zip.ZipOutputStream;
  * 2. 有效的防止别人偷窥你的文件
  * 3. 加密原理开源，可对算法进行修改；理论上只要别人不知道你的加密原理，
  * 即便知道密码，也根本无法破解
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * jar包下载
- * http://tools.minwk.top/addpwd.jar?e=1594701294&token=uu5yo0LPImJOiG5Q_yAHtG8lOpeujhf2OplcFmLk:DJTe5cpuBGKRyn__oDEypOindW8=
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * <p>
  * 加密原理
  * 1. 先对文件或文件夹进行zip压缩{@link FileEncryptAndDecryptSalt_3#toZip(File)}
  * 2. 对压缩后的文件执行加密方法{@link FileEncryptAndDecryptSalt_3#encryptFile(File)}进行加密，
