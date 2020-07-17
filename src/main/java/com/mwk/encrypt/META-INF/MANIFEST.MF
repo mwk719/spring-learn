@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: com.mwk.encrypt.PathEncryptAndDecrypt_1
-Main-Class: com.mwk.encrypt.PathEncryptAndDecrypt_1
+Class-Path: com.mwk.encrypt.FileEncryptAndDecryptSalt_3
+Main-Class: com.mwk.encrypt.FileEncryptAndDecryptSalt_3
 

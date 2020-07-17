@@ -21,10 +21,10 @@ public class ZipUtil {
 	private static final Logger log = LoggerFactory.getLogger(ZipUtil.class);
 
 	public static void main(String[] args) {
-//		File src = new File("E:\\test");
-//		ZipUtil.toZip(src);
+		File src = new File("E:\\test\\阿里巴巴Java开发.pdf");
+		//ZipUtil.toZip(src);
 
-		unZip(new File("E:\\test.zip"));
+		unZip(new File("E:\\test\\阿里巴巴Java开发.pdf.mwk"));
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class ZipUtil {
 	 * @param sourceFile 源文件或文件夹
 	 */
 	public static void toZip(File sourceFile) {
-		File zipPath = new File(sourceFile.getParent() + File.separator + sourceFile.getName() + ".zip");
+		File zipPath = new File(sourceFile.getParent() + File.separator + sourceFile.getName() + ".mwk");
 		toZip(sourceFile, zipPath);
 	}
 

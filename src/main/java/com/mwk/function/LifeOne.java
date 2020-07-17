@@ -1,6 +1,9 @@
 package com.mwk.function;
 
 /**
+ * todo 实现
+ * todo 原理待描述
+ * todo 博客待写
  * 生命一号
  *
  * @author MinWeikai

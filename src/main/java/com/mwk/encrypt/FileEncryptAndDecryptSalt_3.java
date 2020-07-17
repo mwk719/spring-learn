@@ -7,35 +7,84 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
- * 对文件或文件夹路径进行加密或解密
+ * 假设你已经看了我之前的两篇博客
+ * [字节流运算实现文件的加密解密1.0](https://minwk.top/FileEncryptAndDecrypt1.0/)
+ * [字节流运算实现文件的加密解密2.0](https://minwk.top/FileEncryptAndDecrypt2.0/)
+ * 如果没看的话，可以去飞速的浏览一下，方便这篇博客的理解（我不会告诉你，我是让你帮我的博客增加点击量的）
+ * 好，相信你已经点过去看了一下。
+ * 我是相信你的哦！
+ * 那么好，通过对前两篇博客的理解，我便可以开发出一个工具可实现对文件的深加密
+ * 这就是这篇博客[字节流运算实现文件的加密解密3.0](https://minwk.top/FileEncryptAndDecrypt3.0/)
+ * 要说的可制作jar工具包用来对文件或文件夹进行加密解密，此处点题。
+ * 好处：
+ * 1. 可对文件进行深加密
+ * 2. 有效的防止别人偷窥你的文件
+ * 3. 加密原理开源，可对算法进行修改；理论上只要别人不知道你的加密原理，
+ * 即便知道密码，也根本无法破解
  * <p>
- * 加密解密原理
  * <p>
- * 加密：
- * 获取文件的字节码然后对其进行加盐运算，将运算后的字节码信息重新生成后缀为.mwk的文件
- * 可称其为加密文件。
- * 解密：
- * 读取加密文件中的字节码内容，将其转为字节码流，进行去盐运算，然后输出为解密文件。
  * <p>
- * 加密后的文件不建议用文本工具打开，因为可能很大。
  * <p>
- * 问题：
- * 因为读取文件方法使用的是获取文件字节码流的方式，所以不建议特别大的文件，
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * jar包下载
+ * http://tools.minwk.top/addpwd.jar?e=1594701294&token=uu5yo0LPImJOiG5Q_yAHtG8lOpeujhf2OplcFmLk:DJTe5cpuBGKRyn__oDEypOindW8=
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * <p>
+ * 加密原理
+ * 1. 先对文件或文件夹进行zip压缩{@link FileEncryptAndDecryptSalt_3#toZip(File)}
+ * 2. 对压缩后的文件执行加密方法{@link FileEncryptAndDecryptSalt_3#encryptFile(File)}进行加密，
+ * 使用{@link FileEncryptAndDecryptSalt_3#bytesAddSalt(byte[])}密码加盐算法，
+ * 最后生成后缀为{@code .mwk}的文件为加密文件；
+ * 解密原理
+ * 1. 对后缀为{@code .mwk}的加密文件执行{@link FileEncryptAndDecryptSalt_3#decryptFile(File)}
+ * 进行解密，然后得到同名的压缩包文件。
+ * 2. 对压缩包文件执行{@link FileEncryptAndDecryptSalt_3#unZip(File)}进行解压得到原文件
  *
  * @author MinWeikai
- * @date 2020/6/22 20:45
+ * @date 2020-06-30 18:51:29
+ * @see #SUFFIX 加密文件后缀
+ * @see #SALT 用来和字节码相加盐
+ * @see #E 加密方法
+ * @see #D 解密方法
+ * @see #SUCCESS 程序执行状态
+ * @see #BUFFER_SIZE 缓存容量
  */
-public class PathEncryptAndDecrypt_1 {
+public class FileEncryptAndDecryptSalt_3 {
 
 	/**
-	 * 缓存容量
+	 * 执行正常
+	 * 当执行正常时最后会删除源文件，
+	 * 执行异常时直接退出，不会删除源文件
 	 */
-	private static final int BUFFER_SIZE = 2 * 1024;
+	private static boolean SUCCESS = true;
 
 	/**
 	 * 用来和字节码相加
 	 */
 	private static byte SALT = 0;
+
+	/**
+	 * 缓存容量
+	 */
+	private static final int BUFFER_SIZE = 2 * 1024;
 
 	/**
 	 * 加密方法
@@ -47,18 +96,40 @@ public class PathEncryptAndDecrypt_1 {
 	 */
 	private final static String D = "d";
 
-	private final static String TIPS = "Tips：jar with three parameters\n" +
-			"{param1 : encrypt[" + E + "] || decrypt[" + D + "]} \n" +
-			"{param2 : file path} \n" +
-			"{param3 : password is number}\n" +
-			"example java -jar addpwd.jar e E:\\test 1";
+	/**
+	 * 后缀
+	 */
+	private final static String SUFFIX = ".mwk";
 
+	/**
+	 * 提示
+	 */
+	private final static String TIPS = "提示：jar包后面必须跟三个参数\n" +
+			"{参数1：加密[" + E + "] || 解密[" + D + "]} \n" +
+			"{参数2：文件绝对路径} \n" +
+			"{参数3：密码，必须是数字}\n" +
+			"示例：java -jar addpwd.jar e E:/test 1";
+
+
+	/**
+	 * 加密解密方法执行入口，必须传3个参数
+	 *
+	 * @param args [0] 操作类型：加密传 e ，解密传 d
+	 *             [1] 要操作文件的绝对路径
+	 *             [2] 加密或解密的密码，必须是数字
+	 */
 	public static void main(String[] args) {
-		long start = System.currentTimeMillis();
+		//args = new String[]{"e", "E:/test", "250"};
+		//args = new String[]{"d", "E:/test.mwk", "250"};
 
-		if (!check(args)) {
+		//参数校验
+		check(args);
+		if (!SUCCESS) {
 			return;
 		}
+
+		System.out.println("执行已开始，请勿随意退出......");
+		long start = System.currentTimeMillis();
 
 		File src = new File(args[1]);
 		File tempZip;
@@ -66,68 +137,71 @@ public class PathEncryptAndDecrypt_1 {
 		switch (args[0]) {
 			//加密
 			case E:
+				//压缩
 				tempZip = toZip(src);
+				//加密
 				encryptFile(tempZip);
-				System.out.println("请牢记你的密码，忘记则文件无法解密!!");
-				title = "encrypt";
+				title = "加密";
 				break;
 			//解密
 			case D:
+				//解密到临时文件
 				tempZip = decryptFile(src);
+				//对临时文件进行解压到正常文件，解压异常则删除临时文件
+				//因为密码错误时生成的包可能无法解压
 				unZip(tempZip);
-				title = "decrypt";
+				delAllFile(tempZip);
+				title = "解密";
 				break;
 			default:
-				System.err.println(TIPS);
+				errTips(TIPS);
 				return;
 		}
-		//删除临时压缩文件
-		tempZip.deleteOnExit();
-		//删除源文件及子文件
-		delAllFile(src);
 
-		System.out.println( title + " success use time：" + (System.currentTimeMillis() - start) + " ms");
+		//删除源文件及子文件，保留操作后的文件
+		if (SUCCESS) {
+			delAllFile(src);
+			System.out.println(title + " 执行成功 用时：" + (System.currentTimeMillis() - start) + " ms");
+			if(E.equals(args[0])){
+				System.out.println("请牢记你的密码，忘记则文件无法解密!!");
+			}
+			return;
+		}
+		System.err.println(title + " 异常 已退出 请检查密码是否正确!!!");
 	}
 
-	private static boolean check(String[] args) {
+	private static void check(String[] args) {
 		if (args.length != 3) {
-			System.err.println(TIPS);
-			return false;
+			errTips(TIPS);
+			return;
 		}
 
 		try {
 			SALT = Integer.valueOf(args[2]).byteValue();
 		} catch (Exception e) {
-			System.err.println(args[2] + " must be a number");
-			return false;
+			errTips(args[2] + " 必须是数字");
+			return;
 		}
 
 		File file = new File(args[1]);
 		if (!file.exists()) {
-			System.err.println(args[1] + " file path not exists");
-			return false;
+			errTips(args[1] + " 文件路径不存在");
+			return;
 		}
-		return true;
+
+		if (D.equals(args[0]) && !file.getName().endsWith(SUFFIX)) {
+			errTips(file.getName() + " 解密文件路径必须是 ["+SUFFIX+"]");
+		}
 	}
 
 	/**
-	 * 获取加密的文件名称
+	 * 错误提示，发生错误时源文件不可删除
 	 *
-	 * @param fileName
-	 * @return
+	 * @param tips 提示
 	 */
-	private static String getEncryptFileName(String fileName) {
-		return fileName + ".mwk";
-	}
-
-	/**
-	 * 获取解密文件名称
-	 *
-	 * @param fileName
-	 * @return
-	 */
-	private static String getDecryptFileName(String fileName) {
-		return fileName.substring(0, fileName.lastIndexOf("."));
+	private static void errTips(String tips) {
+		SUCCESS = false;
+		System.err.println(tips);
 	}
 
 	/**
@@ -137,13 +211,13 @@ public class PathEncryptAndDecrypt_1 {
 	 * @return
 	 */
 	private static File decryptFile(File encryptFile) {
-		String decryptFile = encryptFile.getParent() + File.separator + getDecryptFileName(encryptFile.getName());
+		String decryptFile = encryptFile.getParent() + File.separator + encryptFile.getName() + SUFFIX;
 		File desc = new File(decryptFile);
 		try {
 			byte[] bytes = bytesSubSalt(readBytes(encryptFile));
 			write(bytes, desc);
 		} catch (Exception e) {
-			e.printStackTrace();
+			errTips("解密文件异常：" + e.getMessage());
 		}
 		return desc;
 	}
@@ -156,10 +230,10 @@ public class PathEncryptAndDecrypt_1 {
 	private static void encryptFile(File src) {
 		try {
 			byte[] bytes = bytesAddSalt(readBytes(src));
-			String encryptFilePath = src.getParent() + File.separator + getEncryptFileName(src.getName());
+			String encryptFilePath = src.getParent() + File.separator + src.getName();
 			write(bytes, new File(encryptFilePath));
 		} catch (Exception e) {
-			e.printStackTrace();
+			errTips("加密文件异常：" + e.getMessage());
 		}
 	}
 
@@ -174,7 +248,7 @@ public class PathEncryptAndDecrypt_1 {
 			out.write(data);
 			out.flush();
 		} catch (IOException e) {
-			e.printStackTrace();
+			errTips("根据字节流生成文件异常：" + e.getMessage());
 		}
 	}
 
@@ -186,9 +260,9 @@ public class PathEncryptAndDecrypt_1 {
 	 * 因为byte的取值范围为-128~127，可以将其类比为一个时钟：
 	 * 从-128开始到127结束，然后又从-128开始
 	 * 比如：(byte)(127+1) = -128
-	 * 这样的话就可以理解加盐运算 {@link PathEncryptAndDecrypt_1#bytesAddSalt(byte[])}
+	 * 这样的话就可以理解加盐运算 {@link FileEncryptAndDecryptSalt_3#bytesAddSalt(byte[])}
 	 * 后：(byte)(127+1) = -128，还是正常byte数据所以文件可以正常生成；
-	 * 去盐运算{@link PathEncryptAndDecrypt_1#bytesSubSalt(byte[])}
+	 * 去盐运算{@link FileEncryptAndDecryptSalt_3#bytesSubSalt(byte[])}
 	 * 后：(byte)(-128-1) = 127，恢复为原来的byte，这样就可以生成原有文件
 	 *
 	 * @param bytes
@@ -218,7 +292,7 @@ public class PathEncryptAndDecrypt_1 {
 	 * 获取文件的byte数组
 	 * 在{@link FileEncryptAndDecryptSalt_1#readBytes(File)}示例中使用FileInputStream字节流读取
 	 * 执行read时，每次都从硬盘中读取文件字节。
-	 * 在{@link PathEncryptAndDecrypt_1#readBytes(File)}示例中使用BufferedInputStream缓冲字节流读取
+	 * 在{@link FileEncryptAndDecryptSalt_3#readBytes(File)}示例中使用BufferedInputStream缓冲字节流读取
 	 * 执行read时，每次都会先从缓冲区进行读取，默认缓冲区大小是8192字节。操作完缓冲区数据后，会从硬盘中获取
 	 * 下一部分字节流放在缓冲区中。缓冲区即是内存，总所周知操作内存比操作硬盘效率要高得多。
 	 * 所以一般情况下使用BufferedInputStream & BufferedOutputStream进行操作文件，因为效率最高
@@ -237,7 +311,7 @@ public class PathEncryptAndDecrypt_1 {
 				return flush;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			errTips("获取字节流异常：" + e.getMessage());
 		}
 		return new byte[0];
 	}
@@ -251,7 +325,7 @@ public class PathEncryptAndDecrypt_1 {
 	 * @return
 	 */
 	public static File toZip(File sourceFile) {
-		File zipPath = new File(sourceFile.getParent() + File.separator + sourceFile.getName() + ".zip");
+		File zipPath = new File(sourceFile.getParent() + File.separator + sourceFile.getName() + SUFFIX);
 		toZip(sourceFile, zipPath);
 		return zipPath;
 	}
@@ -268,11 +342,11 @@ public class PathEncryptAndDecrypt_1 {
 				try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipPath))) {
 					compress(sourceFile, zos, sourceFile.getName());
 				} catch (IOException e) {
-					System.err.println("压缩成ZIP异常：" + e);
+					errTips("压缩成ZIP异常：" + e.getMessage());
 				}
 			}
 		} catch (IOException e) {
-			System.err.println("压缩文件创建异常：" + e);
+			errTips("压缩文件创建异常：" + e.getMessage());
 		}
 
 	}
@@ -296,6 +370,8 @@ public class PathEncryptAndDecrypt_1 {
 				while ((len = in.read(buf)) != -1) {
 					zos.write(buf, 0, len);
 				}
+			} catch (Exception e) {
+				errTips("压缩文件获取流异常：" + e.getMessage());
 			}
 		} else {
 			File[] listFiles = sourceFile.listFiles();
@@ -331,7 +407,7 @@ public class PathEncryptAndDecrypt_1 {
 	public static void unZip(File srcFile, String destDirPath) {
 		// 判断源文件是否存在
 		if (!srcFile.exists()) {
-			System.err.println(srcFile.getPath() + "所指文件不存在");
+			errTips(srcFile.getPath() + "所指文件不存在");
 			return;
 		}
 		// 开始解压
@@ -344,14 +420,14 @@ public class PathEncryptAndDecrypt_1 {
 				// 如果是文件夹，就创建个文件夹
 				if (entry.isDirectory()) {
 					if (!targetFile.mkdirs()) {
-						System.err.println(targetFile + "文件创建失败");
+						errTips(targetFile + "文件创建失败");
 						return;
 					}
 				} else {
 					// 保证这个文件的父文件夹必须要存在
 					if (!targetFile.getParentFile().exists()) {
 						if (!targetFile.getParentFile().mkdirs()) {
-							System.err.println(targetFile + "文件创建失败");
+							errTips(targetFile + "文件创建失败");
 							return;
 						}
 					}
@@ -369,7 +445,7 @@ public class PathEncryptAndDecrypt_1 {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("解压异常" + e);
+			errTips("解压异常" + e.getMessage());
 		}
 	}
 

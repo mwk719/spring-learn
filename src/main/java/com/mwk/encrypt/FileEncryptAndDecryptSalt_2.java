@@ -28,7 +28,7 @@ public class FileEncryptAndDecryptSalt_2 {
 
 	public static void main(String[] args) {
 		//源文件
-		File src = new File("E:\\test\\fiddler5.zip");
+		File src = new File("E:\\test\\阿里巴巴Java开发.zip");
 		//加密文件
 		File encrypt = new File("E:\\test\\阿里巴巴Java开发.pdf.mwk");
 
@@ -38,8 +38,8 @@ public class FileEncryptAndDecryptSalt_2 {
 		System.out.println("加密时间：" + (System.currentTimeMillis() - start));
 
 		//生成解byte文件
-//		decryptFile(encrypt);
-//		System.out.println("解密时间：" + (System.currentTimeMillis() - start));
+		decryptFile(encrypt);
+		System.out.println("解密时间：" + (System.currentTimeMillis() - start));
 	}
 
 	/**
@@ -153,6 +153,8 @@ public class FileEncryptAndDecryptSalt_2 {
 	 * 所以一般情况下使用BufferedInputStream & BufferedOutputStream进行操作文件，因为效率最高
 	 * 但是当你操作的文件小于8192字节时，read时直接读取缓存，使用BufferedInputStream效率最高
 	 * 当文件字节越来越大时，使用FileInputStream的效率就趋近于使用BufferedInputStream
+	 * <p>
+	 * 文件过大时容易造成内存溢出，最好的方式还是边读边写，内存里不要留过多的数据
 	 *
 	 * @param file
 	 * @return

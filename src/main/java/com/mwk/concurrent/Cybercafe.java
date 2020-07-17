@@ -18,18 +18,18 @@ public class Cybercafe {
 	/**
 	 * 电脑数量-可容纳并发
 	 */
-	private static int computerCount = 5;
+	private static final int computerCount = 5;
 
 	/**
 	 * 客户数量-最大并发
 	 */
-	private static int customerCount = 8;
+	private static final int customerCount = 8;
 
 	/**
 	 * 电脑
 	 * computerCount 表示有{@value customerCount}台电脑，即最大并发为{@value customerCount}
 	 */
-	private static Semaphore computer = new Semaphore(computerCount);
+	private static final Semaphore computer = new Semaphore(computerCount);
 
 
 	public static void main(String[] args) {
