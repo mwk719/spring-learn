@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: com.mwk.hello.Hello
-Main-Class: com.mwk.hello.Hello
-

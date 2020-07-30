@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="personService" class="com.mwk.ioc.service.PersonServiceImpl">
+	<bean id="personService" class="com.mwk.bottom.ioc.service.PersonServiceImpl">
 		<!-- 1. property set方法注入 2. constructor-arg 构造方法注入 -->
 		<!-- <property name="personDao" ref="personDao"></property> -->
 		<constructor-arg name="personDao" ref="personDao"></constructor-arg>
 	</bean>
 
-	<bean id="personDao" class="com.mwk.ioc.dao.PersonDaoImpl"></bean>
+	<bean id="personDao" class="com.mwk.bottom.ioc.dao.PersonDaoImpl"></bean>
 
 </beans>
