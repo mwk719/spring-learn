@@ -1,4 +1,5 @@
 # spring-learn
+[![Build Status](https://travis-ci.com/mwk719/spring-learn.svg?branch=master)](https://travis-ci.com/mwk719/spring-learn)
 
 #### 介绍
 spring底层学习demo
