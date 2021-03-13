@@ -13,6 +13,8 @@ public class Person {
 
     private Integer age;
 
+    private Float weight;
+
     public Person() {
     }
 
