@@ -15,16 +15,25 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RespVoProperty {
 
-    /**
-     * 保留小数位数
-     *
-     * @return
-     */
-    int keepDecimal() default 0;
+	/**
+	 * 保留小数位数
+	 * 默认-1不进行保留
+	 *
+	 * @return
+	 */
+	int keepDecimal() default -1;
 
-    /**
-     * 单位
-     * @return
-     */
-    String unit() default "";
+	/**
+	 * 单位
+	 *
+	 * @return
+	 */
+	String unit() default "";
+
+	/**
+	 * 替换值
+	 *
+	 * @return
+	 */
+	String replaceStr() default "";
 }
