@@ -23,27 +23,6 @@ import java.util.stream.Collectors;
 public class Converts {
 
 
-	public static <T> T numToStrVo(Object source, final Class<T> voClass, int keepDecimal, String unit,
-	                               String replaceStr) {
-		Field[] fields = source.getClass().getDeclaredFields();
-		return formatVoFields(source, voClass, fields, keepDecimal, unit, replaceStr);
-	}
-
-
-	private static <T> T formatVoFields(Object source, Class<T> voClass, Field[] fields, int keepDecimal, String unit,
-	                                    String replaceStr) {
-		T data = null;
-		try {
-			data = voClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		for (Field field : fields) {
-			formatVoField(source, keepDecimal, unit, replaceStr, data, field);
-		}
-		return data;
-	}
-
 	/**
 	 * 匹配并格式化属性
 	 *
@@ -65,6 +44,8 @@ public class Converts {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// 此处可自定义规则
 		switch (field.getType().getSimpleName()) {
 			case "Float":
 				if (ObjectUtil.isNotNull(oldTemp)) {
@@ -161,6 +142,7 @@ public class Converts {
 	public static void main(String[] args) {
 		List<Person> list = new ArrayList<>();
 		Person data1 = new Person();
+		data1.setLastName("王");
 		data1.setName("李三");
 		data1.setAge(14);
 		data1.setMoney(BigDecimal.ONE);
@@ -192,5 +174,14 @@ public class Converts {
 		list.add(data3);
 
 		System.out.println(toRespVos(list, PersonVo.class));
+
+		System.out.println("--------------------------------------------");
+
+		Person child = new Person();
+		child.setLastName("李");
+		child.setName("子网");
+		child.setAge(24);
+		System.out.println(child);
+
 	}
 }
