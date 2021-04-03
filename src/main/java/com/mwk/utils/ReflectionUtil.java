@@ -31,6 +31,16 @@ public class ReflectionUtil {
 		}
 	}
 
+	public static Object invokeGetterMethodNoThrowException(Object object, String propertyName) {
+		String getterMethodName = "get" + StringUtils.capitalize(propertyName);
+		try {
+			Method getterMethod = object.getClass().getMethod(getterMethodName);
+			return getterMethod.invoke(object);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	/**
 	* @Description 调用Getter方法 字段存在等级关系的：如：pool.reform.id
 	* @Date 2020年04月29日 15:03:26
