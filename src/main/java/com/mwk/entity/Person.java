@@ -22,6 +22,8 @@ public class Person extends Father {
 
 	private Date date;
 
+	private Date createDate;
+
 	public Person() {
 	}
 

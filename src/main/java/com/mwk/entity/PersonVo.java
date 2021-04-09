@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Date;
+
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
@@ -23,4 +25,6 @@ public class PersonVo extends Father   {
 
 //    @RespVoProperty(dateFormat = "yyyy-MM-dd")
     private String date;
+
+    private Date createDate;
 }

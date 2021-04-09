@@ -91,6 +91,19 @@ public class ConvertRespVo {
 						}
 
 						Object value = readMethod.invoke(source);
+
+						PropertyDescriptor voPd = BeanUtils.getPropertyDescriptor(data.getClass(), targetPd.getName());
+
+						// 映射对象的属性不存在则跳出
+						if(Objects.isNull(voPd)){
+							return;
+						}
+						// 映射类型相同，则直接赋值跳出
+						if(Objects.equals(sourcePd.getPropertyType().getSimpleName(), voPd.getPropertyType().getSimpleName())){
+							writeMethod.invoke(data, value);
+							return;
+						}
+
 						// 此处可自定义规则
 						BigDecimal bigDecimal = null;
 						switch (sourcePd.getPropertyType().getSimpleName()) {
@@ -182,6 +195,7 @@ public class ConvertRespVo {
 		data1.setMoney(BigDecimal.ONE);
 		data1.setWeight(17.68000000f);
 		data1.setDate(new Date());
+		data1.setCreateDate(new Date());
 
 		System.out.println("-----------------单对象转化vo----------------");
 		System.out.println(toRespVo(data1, PersonVo.class));
