@@ -1,5 +1,6 @@
 package com.mwk.utils.convert;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.mwk.annotation.RespVoProperty;
 import com.mwk.entity.Person;
@@ -61,16 +62,19 @@ public class ConvertPro {
 					.orElse(null);
 
 			if (Objects.isNull(property)) {
-				formatVoField(source, -1, "", "", data, targetPd);
+				formatVoField(source, -1, "", "", data, targetPd,
+						false, "");
 			} else {
-				formatVoField(source, property.keepDecimal(), property.unit(), property.replaceStr(), data, targetPd);
+				formatVoField(source, property.keepDecimal(), property.unit(), property.replaceStr(),
+						data, targetPd, property.keepDecimalZero(), property.dateFormat());
 			}
 		}
 
 		return data;
 	}
 
-	private static <T> void formatVoField(Object source, int keepDecimal, String unit, String replaceStr, T data, PropertyDescriptor targetPd) {
+	private static <T> void formatVoField(Object source, int keepDecimal, String unit, String replaceStr, T data,
+	                                      PropertyDescriptor targetPd, boolean keepDecimalZero, String dateFormat) {
 		Method writeMethod = targetPd.getWriteMethod();
 		if (writeMethod != null) {
 			PropertyDescriptor sourcePd = BeanUtils.getPropertyDescriptor(source.getClass(), targetPd.getName());
@@ -82,24 +86,22 @@ public class ConvertPro {
 							readMethod.setAccessible(true);
 						}
 
-						Object value = readMethod.invoke(source);
 						if (!Modifier.isPublic(writeMethod.getDeclaringClass().getModifiers())) {
 							writeMethod.setAccessible(true);
 						}
 
+						Object value = readMethod.invoke(source);
 						// 此处可自定义规则
+						BigDecimal bigDecimal = null;
 						switch (sourcePd.getPropertyType().getSimpleName()) {
 							case "Float":
 								if (ObjectUtil.isNotNull(value)) {
 									if (keepDecimal == -1) {
-										value = new BigDecimal((float) value);
+										bigDecimal = new BigDecimal((float) value);
 									} else {
-										value = new BigDecimal((float) value)
+										bigDecimal = new BigDecimal((float) value)
 												.setScale(keepDecimal, BigDecimal.ROUND_HALF_UP);
 									}
-									value = String.valueOf(value).concat(unit);
-								} else {
-									value = replaceStr;
 								}
 								break;
 							case "Integer":
@@ -112,17 +114,35 @@ public class ConvertPro {
 							case "BigDecimal":
 								if (ObjectUtil.isNotNull(value)) {
 									if (keepDecimal == -1) {
-										value = new BigDecimal(value.toString());
+										bigDecimal = new BigDecimal(value.toString());
 									} else {
-										value = new BigDecimal(value.toString())
+										bigDecimal = new BigDecimal(value.toString())
 												.setScale(keepDecimal, BigDecimal.ROUND_HALF_UP);
 									}
-									value = String.valueOf(value).concat(unit);
+								}
+								break;
+							case "Date":
+								if (ObjectUtil.isNotNull(value)) {
+									value = DateUtil.format((Date)value, dateFormat);
 								} else {
 									value = replaceStr;
 								}
 								break;
 							default:
+						}
+
+						if(!Objects.isNull(bigDecimal)){
+							if(keepDecimalZero){
+								value = String.valueOf(bigDecimal).concat(unit);
+							}else {
+								value = String.valueOf(bigDecimal.stripTrailingZeros().toPlainString()).concat(unit);
+							}
+						}
+
+						if(Objects.isNull(value)){
+							value = replaceStr;
+						}else {
+							value = String.valueOf(value);
 						}
 
 						writeMethod.invoke(data, value);
@@ -160,36 +180,37 @@ public class ConvertPro {
 		data1.setName("李三");
 		data1.setAge(14);
 		data1.setMoney(BigDecimal.ONE);
-		data1.setWeight(15.2f);
+		data1.setWeight(17.68000000f);
+		data1.setDate(new Date());
 
 		System.out.println("-----------------单对象转化vo----------------");
 		System.out.println(toRespVo(data1, PersonVo.class));
 
 		System.out.println("--------------------------------------------");
 
-
-		System.out.println("-----------------集合对象转化vo----------------");
-
-		list.add(data1);
-
-		Person data2 = new Person();
-		data2.setLastName("王");
-		data2.setName("wangwu");
-		data2.setAge(45);
-		data2.setMoney(BigDecimal.valueOf(6.41f));
-		data2.setWeight(null);
-		list.add(data2);
-
-		Person data3 = new Person();
-		data3.setName("张思");
-		data3.setAge(null);
-		data3.setMoney(BigDecimal.valueOf(25f));
-		data3.setWeight(17.689f);
-		list.add(data3);
-
-		System.out.println(toRespVos(list, PersonVo.class));
-
-		System.out.println("--------------------------------------------");
+//
+//		System.out.println("-----------------集合对象转化vo----------------");
+//
+//		list.add(data1);
+//
+//		Person data2 = new Person();
+//		data2.setLastName("王");
+//		data2.setName("wangwu");
+//		data2.setAge(45);
+//		data2.setMoney(BigDecimal.valueOf(6.41f));
+//		data2.setWeight(null);
+//		list.add(data2);
+//
+//		Person data3 = new Person();
+//		data3.setName("张思");
+//		data3.setAge(null);
+//		data3.setMoney(BigDecimal.valueOf(25f));
+//		data3.setWeight(17.68000000f);
+//		list.add(data3);
+//
+//		System.out.println(toRespVos(list, PersonVo.class));
+//
+//		System.out.println("--------------------------------------------");
 
 	}
 }

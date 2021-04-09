@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,6 +19,8 @@ public class Person extends Father {
 	private Integer age;
 
 	private Float weight;
+
+	private Date date;
 
 	public Person() {
 	}

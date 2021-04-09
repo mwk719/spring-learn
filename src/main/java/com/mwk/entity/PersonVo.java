@@ -18,7 +18,9 @@ public class PersonVo extends Father   {
     @RespVoProperty(unit = "岁", replaceStr = "-")
     private String age;
 
-    @RespVoProperty(unit = "kg", keepDecimal = 2)
+    @RespVoProperty(keepDecimal = 4, keepDecimalZero = false)
     private String weight;
 
+    @RespVoProperty(dateFormat = "yyyy-MM-dd")
+    private String date;
 }
