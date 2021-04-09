@@ -21,6 +21,6 @@ public class PersonVo extends Father   {
     @RespVoProperty(keepDecimal = 4, keepDecimalZero = false)
     private String weight;
 
-    @RespVoProperty(dateFormat = "yyyy-MM-dd")
+//    @RespVoProperty(dateFormat = "yyyy-MM-dd")
     private String date;
 }

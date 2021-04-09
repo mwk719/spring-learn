@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author MinWeikai
  * @date 2021/4/3 19:05
  */
-public class ConvertPro {
+public class ConvertRespVo {
 
 
 	/**
@@ -63,7 +63,7 @@ public class ConvertPro {
 
 			if (Objects.isNull(property)) {
 				formatVoField(source, -1, "", "", data, targetPd,
-						false, "");
+						false, "yyyy-MM-dd HH:mm:ss");
 			} else {
 				formatVoField(source, property.keepDecimal(), property.unit(), property.replaceStr(),
 						data, targetPd, property.keepDecimalZero(), property.dateFormat());
