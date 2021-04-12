@@ -37,6 +37,11 @@ public class Sort {
                 .sorted(Comparator.comparing(Person::getAge, Comparator.nullsLast(Integer::compareTo)))
                 .collect(Collectors.toList());
         System.out.println("将属性值可能为null的元素排在后面 "+ pList);
+
+        //添加序号
+        Integer[] arr = {1};
+        pList = pList.stream().peek(e -> e.setId(arr[0]++)).collect(Collectors.toList());
+        System.out.println(pList);
     }
 
 }

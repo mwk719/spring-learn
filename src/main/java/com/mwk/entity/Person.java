@@ -12,6 +12,8 @@ import java.util.Date;
 @ToString(callSuper = true)
 public class Person extends Father {
 
+	private Integer id;
+
 	private String name;
 
 	private BigDecimal money;
