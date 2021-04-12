@@ -1,6 +1,5 @@
 package com.mwk.entity;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,9 +8,16 @@ import lombok.Data;
  * @author MinWeikai
  * @date 2021/4/3 12:55
  */
-@Builder
 @Data
 public class PencilCase {
+
+	public PencilCase() {
+	}
+
+	public PencilCase(String name, Integer num) {
+		this.name = name;
+		this.num = num;
+	}
 
 	private String name;
 
