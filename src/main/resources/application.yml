@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+# 设置代理
+proxy:
+  servlet_url: /proxybaidu/*
+  target_url: https://www.baidu.com
+
+#  其他demo
