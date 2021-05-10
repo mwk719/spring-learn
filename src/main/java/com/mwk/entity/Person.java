@@ -40,6 +40,11 @@ public class Person extends Father {
 		this.age = age;
 	}
 
+	public Person(Integer id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+
 	public void say() {
 		System.out.println("hello person");
 	}
