@@ -3,7 +3,6 @@ package com.mwk.utils;
 import com.mwk.entity.PencilCase;
 import com.mwk.entity.Schoolbag;
 import com.mwk.entity.Student;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -21,32 +20,39 @@ public class MyFormat {
 	 *
 	 * @param source
 	 * @param format String format = "{%name%}在{%date%}背着{%bag.color%}的书包，" +
-	 * 				"但是只装了{%bag.pencilCase.num%}支{%bag.pencilCase.name%}，因为他是装笔！";
+	 *               "但是只装了{%bag.pencilCase.num%}支{%bag.pencilCase.name%}，因为他是装笔！";
 	 * @return
 	 */
 	public static String beanFormatStr(Object source, String format) {
 		String[] str = format.split("\\{%");
 		StringBuilder sb = new StringBuilder();
 		for (String s : str) {
-			if (StringUtils.isEmpty(s)) {
-				continue;
-			}
 			int a = s.indexOf("%}");
-			String key = s.substring(0, s.indexOf("%}"));
-			sb.append(MyOptional.getVStrByField(source, key));
-			sb.append(s.substring(a + 2));
+			if (a != -1) {
+				String key = s.substring(0, a);
+				sb.append(MyOptional.getVStrByField(source, key));
+				sb.append(s.substring(a + 2));
+			}else {
+				sb.append(s);
+			}
 		}
 		return sb.toString();
 	}
 
 	public static void main(String[] args) {
-		Student student = new Student("张三",
-				new Date(),
-				new Schoolbag("黄色",
-						new PencilCase("中性笔", 2)));
+		Student student = new Student();
+		student.setName("张三");
+		student.setIdentity("匪徒");
+		student.setDate(new Date());
 
-		String format = "{%name%}在{%date%}背着{%bag.color%}的书包，" +
-				"但是只装了{%bag.pencilCase.num%}支{%bag.pencilCase.name%}，因为他是装笔！";
+		Schoolbag bag = new Schoolbag();
+		bag.setColor("黄色");
+		bag.setPencilCase(new PencilCase("中性笔", 2));
+
+		student.setBag(bag);
+
+		String format = "各单位请注意：{%identity%}{%name%}于{%date%}背着{%bag.color%}的包，" +
+				"里面装了{%bag.pencilCase.num%}支{%bag.pencilCase.name%}";
 
 		System.out.println(beanFormatStr(student, format));
 

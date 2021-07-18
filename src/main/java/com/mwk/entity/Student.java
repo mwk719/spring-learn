@@ -31,6 +31,7 @@ public class Student {
 
 	private Date date;
 
+	private String identity;
 
 	private Schoolbag bag;
 }
