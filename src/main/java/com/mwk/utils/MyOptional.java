@@ -24,10 +24,13 @@
  */
 package com.mwk.utils;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mwk.entity.Schoolbag;
 import com.mwk.entity.Student;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,6 +39,10 @@ import java.util.Optional;
  * @date 2021/4/3 12:57
  */
 public final class MyOptional {
+
+    public static String getVStrByField(Object source, String filed) {
+        return getValueByField(source, filed, String.class);
+    }
 
 
     /**
@@ -53,6 +60,7 @@ public final class MyOptional {
         Object oldTemp;
         if (filedNames.length == 1) {
             oldTemp = ReflectionUtil.invokeGetterMethodNoThrowException(source, filed);
+            oldTemp = convertInstanceofByMyStyle(oldTemp, vClass);
             return new ObjectMapper().convertValue(oldTemp, vClass);
         }
         oldTemp = ReflectionUtil.invokeGetterMethodNoThrowException(source, getFirstStrByPoint(filed));
@@ -60,7 +68,33 @@ public final class MyOptional {
             return null;
         }
         oldTemp = getValueByField(oldTemp, getEndStrByPoint(filed), vClass);
+        oldTemp = convertInstanceofByMyStyle(oldTemp, vClass);
         return new ObjectMapper().convertValue(oldTemp, vClass);
+    }
+
+    /**
+     * 根据vClass对构建返回对象
+     * @param object
+     * @param vClass
+     * @param <T>
+     * @return
+     */
+    private static <T> Object convertInstanceofByMyStyle(Object object, Class<T> vClass) {
+        if(Objects.isNull(object)){
+            return null;
+        }
+        try {
+        	// 当需要输出String时需要对特定格式数据做转换
+            if(vClass.newInstance() instanceof String){
+                // 自定义处理
+                if(object instanceof Date){
+                    return DateUtil.formatDateTime(Convert.toDate(object));
+                }
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     /**

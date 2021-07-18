@@ -2,6 +2,8 @@ package com.mwk.entity;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * 学生类
  *
@@ -19,7 +21,15 @@ public class Student {
 		this.bag = bag;
 	}
 
+	public Student(String name, Date date, Schoolbag bag) {
+		this.name = name;
+		this.date = date;
+		this.bag = bag;
+	}
+
 	private String name;
+
+	private Date date;
 
 
 	private Schoolbag bag;
