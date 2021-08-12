@@ -20,9 +20,6 @@ public class ThreadPoolTaskExecutorBatch<T> {
 
     private static final Logger log = LoggerFactory.getLogger(ThreadPoolTaskExecutorBatch.class);
 
-//    private TaskSender taskSender;
-
-
     /**
      * 每轮线程数
      */
@@ -32,6 +29,16 @@ public class ThreadPoolTaskExecutorBatch<T> {
      * 每页数量，每轮处理数据量
      */
     private int pageSize = 10;
+
+
+    private int maxPoolSize = 10;
+
+    private int maxPageSize = 10;
+
+    /**
+     * 自动分配线程数
+     */
+    private boolean autoPoolSize = true;
 
     /**
      * 需要批量处理的数据集
@@ -87,16 +94,26 @@ public class ThreadPoolTaskExecutorBatch<T> {
         return this;
     }
 
-//    public TaskSender getTaskSender() {
-//        if (Objects.isNull(taskSender)) {
-//            taskSender = SpringUtils.getBean(TaskSender.class);
-//        }
-//        return taskSender;
-//    }
+    public void setAutoPoolSize(boolean autoPoolSize) {
+        this.autoPoolSize = autoPoolSize;
+    }
+
+    public void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize;
+    }
+
+    public void setMaxPageSize(int maxPageSize) {
+        this.maxPageSize = maxPageSize;
+    }
 
     public void start() {
         TimeInterval timer = DateUtil.timer();
         log.info("----开始生成数据----");
+        if(!this.autoPoolSizeByList()){
+            return;
+        }
+        log.debug("批任务处理信息：autoPoolSize={} poolSize={} pageSize={} maxPoolSize={} maxPageSize={}",
+                this.autoPoolSize, this.poolSize, this.pageSize, this.maxPoolSize, this.maxPageSize);
         //是否继续
         boolean proceed = true;
         //线程创建轮数
@@ -109,10 +126,10 @@ public class ThreadPoolTaskExecutorBatch<T> {
             int temp = 0;
             for (int k = 0; k < this.poolSize; k++) {
                 page++;
-//                list.add();
-//                this.getTaskSender().send(taskName,
-//                        new ExecutorBatch<T>(this.type, new Pager<>(this.list, page, this.pageSize), objectService)
-//                )
+//                list.add(this.getTaskSender().send(taskName,
+//                        new ExecutorBatch<T>(this.type, new Page<>(this.list, page, this.pageSize), objectService)
+//                        )
+//                );
             }
             try {
                 for (Future<Object> result : list) {
@@ -128,7 +145,36 @@ public class ThreadPoolTaskExecutorBatch<T> {
             list.clear();
         }
 
-        log.info("----总轮数：" + rounds + "，总页数：" + page + "，耗时：" + timer.intervalMinute());
+        log.info("----总轮数：" + rounds + "，总页数：" + page + "，耗时：" + timer.intervalSecond());
+    }
+
+    /**
+     * 自动计算批任务执行线程数、每线程执行任务数
+     * @return
+     */
+    private boolean autoPoolSizeByList(){
+        if(!this.autoPoolSize){
+            return true;
+        }
+        int allSize = this.list.size();
+        if(allSize == 0){
+            return false;
+        }
+        // 任务总数小于等于最大线程数，则创建任务数线程，每线程执行1任务
+        if(allSize <= this.maxPoolSize){
+            this.setPoolSize(allSize);
+            this.setPageSize(1);
+            return true;
+        }
+        // 任务总数小于等于最大线程数*最大线程执行任务数，则线程数最大值，每线程执行任务总数除以线程数最大值进位值
+        int rem = allSize % this.maxPoolSize;
+        int value = allSize / this.maxPoolSize;
+        if(allSize <= this.maxPoolSize * this.maxPageSize){
+            this.setPoolSize(this.maxPoolSize);
+            this.setPageSize(rem == 0 ? value : (value + 1));
+            return true;
+        }
+        return true;
     }
 
 }

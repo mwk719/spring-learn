@@ -6,4 +6,8 @@ package com.mwk.thread.task;
  */
 public class MytBatchCallableTest extends AbstractBatchCallable {
 
+    @Override
+    public Integer call() throws Exception {
+        return null;
+    }
 }
