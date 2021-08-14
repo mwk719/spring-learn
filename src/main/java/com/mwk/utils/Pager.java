@@ -22,6 +22,7 @@ public class Pager<T> implements Serializable {
 		this.currentPage = currentPage;
 		this.pageSize = pageSize;
 		this.content = content;
+		this.setRecordTotal(content.size());
 	}
 
 	public Pager() {
@@ -94,7 +95,8 @@ public class Pager<T> implements Serializable {
 	 */
 	public void setRecordTotal(int recordTotal) {
 		this.recordTotal = recordTotal;
-		otherAttr();
+		this.otherAttr();
+		this.setList();
 	}
 
 	/**

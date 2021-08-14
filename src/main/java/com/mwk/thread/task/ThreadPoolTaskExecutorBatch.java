@@ -1,13 +1,16 @@
 package com.mwk.thread.task;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
+import com.mwk.utils.Pager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -16,7 +19,7 @@ import java.util.concurrent.Future;
  * @author MinWeikai
  * @date 2021/7/22 11:03
  */
-public class ThreadPoolTaskExecutorBatch<T> {
+public class ThreadPoolTaskExecutorBatch {
 
     private static final Logger log = LoggerFactory.getLogger(ThreadPoolTaskExecutorBatch.class);
 
@@ -35,6 +38,8 @@ public class ThreadPoolTaskExecutorBatch<T> {
 
     private int maxPageSize = 10;
 
+    private Class abstractBatchCallable;
+
     /**
      * 自动分配线程数
      */
@@ -43,53 +48,33 @@ public class ThreadPoolTaskExecutorBatch<T> {
     /**
      * 需要批量处理的数据集
      */
-    private List<T> list;
+    private List list;
 
-    /**
-     * 类型
-     */
-    private Integer type;
 
-    /**
-     * 服务处理方法
-     */
-    private Object objectService;
-
-    /**
-     * 任务名称
-     */
-    private String taskName;
-
-    public ThreadPoolTaskExecutorBatch() {
+    public static ThreadPoolTaskExecutorBatch build() {
+		return new ThreadPoolTaskExecutorBatch();
     }
 
+    public ThreadPoolTaskExecutorBatch setAbstractBatchCallable(Class abstractBatchCallable) {
+        this.abstractBatchCallable = abstractBatchCallable;
+        return this;
+    }
 
-    public ThreadPoolTaskExecutorBatch<T> setList(List<T> list) {
+    public static  AbstractBatchCallable getInstance(Class batchCallable) throws Exception {
+        return (AbstractBatchCallable) batchCallable.newInstance();
+    }
+
+    public ThreadPoolTaskExecutorBatch setList(List list) {
         this.list = list;
         return this;
     }
 
-    public ThreadPoolTaskExecutorBatch<T> setObjectService(Object objectService) {
-        this.objectService = objectService;
-        return this;
-    }
-
-    public ThreadPoolTaskExecutorBatch<T> setType(Integer type) {
-        this.type = type;
-        return this;
-    }
-
-    public ThreadPoolTaskExecutorBatch<T> setTaskName(String taskName) {
-        this.taskName = taskName;
-        return this;
-    }
-
-    public ThreadPoolTaskExecutorBatch<T> setPoolSize(int poolSize) {
+    public ThreadPoolTaskExecutorBatch setPoolSize(int poolSize) {
         this.poolSize = poolSize;
         return this;
     }
 
-    public ThreadPoolTaskExecutorBatch<T> setPageSize(int pageSize) {
+    public ThreadPoolTaskExecutorBatch setPageSize(int pageSize) {
         this.pageSize = pageSize;
         return this;
     }
@@ -120,20 +105,29 @@ public class ThreadPoolTaskExecutorBatch<T> {
         int rounds = 0;
         //起始页数
         int page = 0;
-        List<Future<Object>> list = new ArrayList<>();
+        List<Callable<Integer>> list = new ArrayList<>();
+	    Pager pager;
         while (proceed) {
             rounds++;
             int temp = 0;
             for (int k = 0; k < this.poolSize; k++) {
                 page++;
-//                list.add(this.getTaskSender().send(taskName,
-//                        new ExecutorBatch<T>(this.type, new Page<>(this.list, page, this.pageSize), objectService)
-//                        )
-//                );
+	            try {
+		            pager = new Pager<>(this.list, page, pageSize);
+		            if(pager.getContent().size() == 0){
+		            	break;
+		            }
+		            list.add(getInstance(abstractBatchCallable).send(pager));
+	            } catch (Exception e) {
+		            e.printStackTrace();
+	            }
             }
             try {
-                for (Future<Object> result : list) {
-                    temp += Convert.toInt(result.get());
+                ExecutorService executor = Executors.newCachedThreadPool();
+                List<Future<Integer>> results = executor.invokeAll(list);
+                executor.shutdown();
+                for (Future<Integer> result : results) {
+                    temp += result.get();
                 }
             } catch (Exception e) {
                 log.error("生成数据出错" + e.getMessage(), e);
