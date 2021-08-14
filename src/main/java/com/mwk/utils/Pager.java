@@ -2,6 +2,7 @@ package com.mwk.utils;
 
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -148,7 +149,7 @@ public class Pager<T> implements Serializable {
 		int start = this.pageSize * (this.currentPage - 1);
 		//起始页大于总页数
 		if (start > this.recordTotal) {
-			this.content = null;
+			this.content = Collections.emptyList();
 			return;
 		}
 

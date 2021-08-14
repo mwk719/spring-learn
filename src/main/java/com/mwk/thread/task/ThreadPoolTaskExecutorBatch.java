@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * 批量线程处理器
@@ -79,16 +76,19 @@ public class ThreadPoolTaskExecutorBatch {
         return this;
     }
 
-    public void setAutoPoolSize(boolean autoPoolSize) {
+    public ThreadPoolTaskExecutorBatch setAutoPoolSize(boolean autoPoolSize) {
         this.autoPoolSize = autoPoolSize;
+        return this;
     }
 
-    public void setMaxPoolSize(int maxPoolSize) {
+    public ThreadPoolTaskExecutorBatch setMaxPoolSize(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
+        return this;
     }
 
-    public void setMaxPageSize(int maxPageSize) {
+    public ThreadPoolTaskExecutorBatch setMaxPageSize(int maxPageSize) {
         this.maxPageSize = maxPageSize;
+        return this;
     }
 
     public void start() {
@@ -117,13 +117,14 @@ public class ThreadPoolTaskExecutorBatch {
 		            if(pager.getContent().size() == 0){
 		            	break;
 		            }
-		            list.add(getInstance(abstractBatchCallable).send(pager));
+		            list.add(getInstance(abstractBatchCallable).setPager(pager));
 	            } catch (Exception e) {
 		            e.printStackTrace();
 	            }
             }
             try {
-                ExecutorService executor = Executors.newCachedThreadPool();
+
+                ExecutorService executor = Executors.newFixedThreadPool(this.poolSize);
                 List<Future<Integer>> results = executor.invokeAll(list);
                 executor.shutdown();
                 for (Future<Integer> result : results) {
@@ -139,7 +140,7 @@ public class ThreadPoolTaskExecutorBatch {
             list.clear();
         }
 
-        log.info("----总轮数：" + rounds + "，总页数：" + page + "，耗时：" + timer.intervalSecond());
+        log.info("----总轮数：" + rounds + "，总页数：" + page + "，耗时：" + timer.intervalMs());
     }
 
     /**

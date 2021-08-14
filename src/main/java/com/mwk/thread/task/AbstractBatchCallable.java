@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
+ * 线程批量处理执行抽象类，需要批量处理数据的任务都可以继承此抽象类
+ *
  * @author MinWeikai
  * @date 2021/8/7 10:44
  */
@@ -34,10 +36,9 @@ public abstract class AbstractBatchCallable implements Callable<Integer> {
 	 */
 	protected abstract void exec();
 
-	AbstractBatchCallable send(Pager pager) {
+	public AbstractBatchCallable setPager(Pager pager) {
 		this.pager = pager;
 		this.list = pager.getContent();
 		return this;
 	}
-
 }
