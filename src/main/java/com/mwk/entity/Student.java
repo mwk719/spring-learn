@@ -49,7 +49,7 @@ public class Student extends AbstractComparableMap<Student> {
 
 	@Override
 	public void buildCompareMap(Student o) {
-		this.map1 = this.getSubjects().stream().collect(Collectors.toMap(Subject::getName, Subject::getValue));
-		this.map2 = o.getSubjects().stream().collect(Collectors.toMap(Subject::getName, Subject::getValue));
+		map1 = this.getSubjects().stream().collect(Collectors.toMap(Subject::getName, Subject::getValue));
+		map2 = o.getSubjects().stream().collect(Collectors.toMap(Subject::getName, Subject::getValue));
 	}
 }

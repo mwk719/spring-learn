@@ -21,7 +21,7 @@ public class InlineListSort {
 	public static void main(String[] args) {
 		List<Student> students = new ArrayList<>();
 		students.add(new Student("李四", Arrays.asList(
-				new Subject("语文", "36"),
+				new Subject("语文", "0"),
 				new Subject("数学", "69"))
 		));
 		students.add(new Student("王五", Arrays.asList(
