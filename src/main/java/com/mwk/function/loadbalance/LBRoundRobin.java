@@ -18,7 +18,6 @@ import java.util.concurrent.*;
 @Slf4j
 public class LBRoundRobin extends AbstractLoadBalance {
 
-    int pos = 0;
     @Override
     public String getIp() {
         Map<String, Integer> ipServerMap = new ConcurrentHashMap<>(IP_MAP.size());
@@ -30,19 +29,18 @@ public class LBRoundRobin extends AbstractLoadBalance {
         int max = ipList.size();
         String ip;
 
-        if (pos >= max) {
-            pos = 0;
-        }
-        ip = ipList.get(pos);
-        pos++;
 
-//        synchronized (pos) {
-//            if (pos[0] >= max) {
-//                pos[0] = 0;
-//            }
-//            ip = ipList.get(pos[0]);
-//            pos[0]++;
-//        }
+        /*
+         1. 使用静态变量pos保证同步
+         2. 非静态则认为锁的是对象，高并发时每次都从第一个开始轮询，并没有达到真正的轮询
+         */
+        synchronized (pos) {
+            if (pos[0] >= max) {
+                pos[0] = 0;
+            }
+            ip = ipList.get(pos[0]);
+            pos[0]++;
+        }
 
         return ip;
     }
@@ -56,21 +54,35 @@ public class LBRoundRobin extends AbstractLoadBalance {
         singleThreadPool.execute(() -> {
             LBRoundRobin roundRobin = new LBRoundRobin();
             for (int i = 0; i < 3; i++) {
-                log.debug("第{}个 {}", i, roundRobin.getIp());
+                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
             }
         });
 
         singleThreadPool.execute(() -> {
             LBRoundRobin roundRobin = new LBRoundRobin();
             for (int i = 0; i < 3; i++) {
-                log.debug("第{}个 {}", i, roundRobin.getIp());
+                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
             }
         });
 
         singleThreadPool.execute(() -> {
             LBRoundRobin roundRobin = new LBRoundRobin();
             for (int i = 0; i < 3; i++) {
-                log.debug("第{}个 {}", i, roundRobin.getIp());
+                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
+            }
+        });
+
+        singleThreadPool.execute(() -> {
+            LBRoundRobin roundRobin = new LBRoundRobin();
+            for (int i = 0; i < 3; i++) {
+                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
+            }
+        });
+
+        singleThreadPool.execute(() -> {
+            LBRoundRobin roundRobin = new LBRoundRobin();
+            for (int i = 0; i < 3; i++) {
+                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
             }
         });
         singleThreadPool.shutdown();
