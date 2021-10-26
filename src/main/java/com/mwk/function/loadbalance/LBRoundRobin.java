@@ -33,6 +33,7 @@ public class LBRoundRobin extends AbstractLoadBalance {
         /*
          1. 使用静态变量pos保证同步
          2. 非静态则认为锁的是对象，高并发时每次都从第一个开始轮询，并没有达到真正的轮询
+         3. 不使用final修饰pos，当这个值被修改时，锁定的变量对象已经改变，同步性被破坏了
          */
         synchronized (pos) {
             if (pos[0] >= max) {
@@ -65,26 +66,26 @@ public class LBRoundRobin extends AbstractLoadBalance {
             }
         });
 
-        singleThreadPool.execute(() -> {
-            LBRoundRobin roundRobin = new LBRoundRobin();
-            for (int i = 0; i < 3; i++) {
-                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-            }
-        });
-
-        singleThreadPool.execute(() -> {
-            LBRoundRobin roundRobin = new LBRoundRobin();
-            for (int i = 0; i < 3; i++) {
-                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-            }
-        });
-
-        singleThreadPool.execute(() -> {
-            LBRoundRobin roundRobin = new LBRoundRobin();
-            for (int i = 0; i < 3; i++) {
-                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-            }
-        });
+//        singleThreadPool.execute(() -> {
+//            LBRoundRobin roundRobin = new LBRoundRobin();
+//            for (int i = 0; i < 3; i++) {
+//                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
+//            }
+//        });
+//
+//        singleThreadPool.execute(() -> {
+//            LBRoundRobin roundRobin = new LBRoundRobin();
+//            for (int i = 0; i < 3; i++) {
+//                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
+//            }
+//        });
+//
+//        singleThreadPool.execute(() -> {
+//            LBRoundRobin roundRobin = new LBRoundRobin();
+//            for (int i = 0; i < 3; i++) {
+//                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
+//            }
+//        });
         singleThreadPool.shutdown();
     }
 }
