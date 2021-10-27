@@ -52,40 +52,16 @@ public class LBRoundRobin extends AbstractLoadBalance {
         ExecutorService singleThreadPool = new ThreadPoolExecutor(10, 20,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
-        singleThreadPool.execute(() -> {
-            LBRoundRobin roundRobin = new LBRoundRobin();
-            for (int i = 0; i < 3; i++) {
-                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-            }
-        });
+        int n = 6;
+        for (int j = 0; j < n; j++) {
+            singleThreadPool.execute(() -> {
+                LBRoundRobin roundRobin = new LBRoundRobin();
+                for (int i = 0; i < 3; i++) {
+                    log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
+                }
+            });
+        }
 
-        singleThreadPool.execute(() -> {
-            LBRoundRobin roundRobin = new LBRoundRobin();
-            for (int i = 0; i < 3; i++) {
-                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-            }
-        });
-
-//        singleThreadPool.execute(() -> {
-//            LBRoundRobin roundRobin = new LBRoundRobin();
-//            for (int i = 0; i < 3; i++) {
-//                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-//            }
-//        });
-//
-//        singleThreadPool.execute(() -> {
-//            LBRoundRobin roundRobin = new LBRoundRobin();
-//            for (int i = 0; i < 3; i++) {
-//                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-//            }
-//        });
-//
-//        singleThreadPool.execute(() -> {
-//            LBRoundRobin roundRobin = new LBRoundRobin();
-//            for (int i = 0; i < 3; i++) {
-//                log.debug("线程{} 第{}个请求 {}", Thread.currentThread().getId(), i, roundRobin.getIp());
-//            }
-//        });
         singleThreadPool.shutdown();
     }
 }
