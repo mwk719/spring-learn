@@ -3,8 +3,10 @@ package com.mwk.function.stream.extend;
 import com.mwk.entity.PersonDTO;
 import one.util.streamex.StreamEx;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author MinWeikai
@@ -54,5 +56,16 @@ public class groupingBy {
 //
 //
 //        System.out.println(m2);
+
+
+        List<PersonDTO> list = Arrays.asList(
+                PersonDTO.builder().city("深圳").name("李四").build(),
+                PersonDTO.builder().city("深圳").name("王五").build(),
+                PersonDTO.builder().city("西安").name("张三").build()
+        );
+        Map<String,List<String>> map = list.stream().collect(Collectors.groupingBy(PersonDTO::getCity,
+                Collectors.mapping(PersonDTO::getName, Collectors.toList())));
+        System.out.println(map);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.mwk.function.stream;
 
+import cn.hutool.json.JSONUtil;
 import com.mwk.entity.Person;
 
 import java.math.BigDecimal;
@@ -40,8 +41,8 @@ public class Sort {
 
         //添加序号
         Integer[] arr = {1};
-        pList = pList.stream().peek(e -> e.setId(arr[0]++)).collect(Collectors.toList());
-        System.out.println(pList);
+        pList.stream().forEach(e -> e.setId(arr[0]++));
+        System.out.println(JSONUtil.toJsonPrettyStr(pList));
     }
 
 }
