@@ -1,5 +1,6 @@
 package com.mwk.function.stream.extend;
 
+import cn.hutool.json.JSONUtil;
 import com.mwk.entity.PersonDTO;
 import one.util.streamex.StreamEx;
 
@@ -35,7 +36,7 @@ public class groupingBy {
 //        System.out.println(m);
 
         Map<String, List<PersonDTO>> m = s1.groupingBy(e -> e.getCity() + e.getHouseNo());
-        System.out.println(m);
+        System.out.println(JSONUtil.toJsonPrettyStr(m));
 //        Assertions.assertNotNull(m.get("London"));
 //        Assertions.assertTrue(m.get("London").size() == 2);
 //        Assertions.assertNotNull(m.get("Manchester"));
