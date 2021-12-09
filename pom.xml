@@ -94,6 +94,12 @@
 			<version>0.9.12</version>
 		</dependency>
 
+		<dependency>
+			<groupId>top.minwk</groupId>
+			<artifactId>excel-x</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
