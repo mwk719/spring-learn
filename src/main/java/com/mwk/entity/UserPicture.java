@@ -2,11 +2,11 @@ package com.mwk.entity;
 
 import com.ibiz.excel.picture.support.annotation.ExportModel;
 
+import java.util.List;
+
 /**
- * 用户
- *
- * @author MinWeikai
- * @date 2021-12-09 14:01:10
+ * @auther 喻场
+ * @date 2020/7/813:41
  */
 public class UserPicture {
 
@@ -23,6 +23,8 @@ public class UserPicture {
     private String picture;
     @ExportModel(sort = 4, isPicture = true, title = "图片2")
     private String headerPicture;
+    @ExportModel(sort = 5, isPicture = true, title = "多图片")
+    private List<String> pictures;
 
     public UserPicture(String name, Integer age, String department, String picture) {
         this.name = name;
@@ -69,5 +71,13 @@ public class UserPicture {
 
     public void setHeaderPicture(String headerPicture) {
         this.headerPicture = headerPicture;
+    }
+
+    public List<String> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<String> pictures) {
+        this.pictures = pictures;
     }
 }
