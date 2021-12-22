@@ -53,9 +53,11 @@ public class ExcelService {
         TimeInterval timer = DateUtil.timer();
         Workbook workBook = Workbook.getInstance();
         Sheet sheet = workBook.createSheet("测试");
+        // 给标题行加上背景色，加颜色时，会对字体加粗
+        CellStyle cellStyle = workBook.createCellStyle();
+        cellStyle.setFgColorRgb("9AC0CD");
         // 图片数组
         File[] files = FileUtil.ls(IMAGES_PATH);
-        List<UserPicture> userPictures = new ArrayList<>();
         UserPicture userPicture;
         for (int r = 0; r < row; r++) {
             userPicture = new UserPicture();
@@ -64,15 +66,11 @@ public class ExcelService {
             userPicture.setPicture(IMG_PATH_1);
             // 根据图片数组和要获取图片的数量，随机从图片数组中取出若干
             userPicture.setPictures(getPictures(files, 9));
-            userPictures.add(userPicture);
+            sheet.createRow(userPicture);
+            if(r == 0){
+                sheet.getRow(r).setCellStyle(cellStyle);
+            }
         }
-        // 创建集合的行数据在excel中
-        sheet.createRow(userPictures);
-
-        // 给标题行加上背景色，加颜色时，会对字体加粗
-        CellStyle cellStyle = workBook.createCellStyle();
-        cellStyle.setFgColorRgb("9AC0CD");
-        sheet.getRow(0).setCellStyle(cellStyle);
         log.info("file download cost time : {} 毫秒", timer.interval());
         return workBook;
     }
