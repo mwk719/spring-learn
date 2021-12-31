@@ -1,5 +1,5 @@
 # spring-learn
-[![Build Status](https://travis-ci.com/mwk719/spring-learn.svg?branch=master)](https://travis-ci.com/mwk719/spring-learn)
+[![Build Status](https://travis-ci.com/mwk719/spring-learn.svg?branch=master)](https://app.travis-ci.com/github/mwk719/spring-learn)
 [![codecov](https://codecov.io/gh/mwk719/spring-learn/branch/master/graph/badge.svg)](https://codecov.io/gh/mwk719/spring-learn)
 
 #### 介绍
