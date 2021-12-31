@@ -45,20 +45,20 @@ public class ExcelController {
 
     /**
      * 使用接口下载excel示例
-     * http://localhost:8080/excel/export/1_1_0/5
+     * http://localhost:8080/excel/export/2_0_0/205
      * 版本支持
      * <dependency>
      * 			<groupId>top.minwk</groupId>
      * 			<artifactId>excel-x</artifactId>
-     * 			<version>1.1.0</version>
+     * 			<version>2.0.0</version>
      * 		</dependency>
      *
      * @param response
      * @throws IOException
      */
-    @GetMapping("/export/1_1_0/{row}")
+    @GetMapping("/export/2_0_0/{row}")
     public void export1_1_0(HttpServletResponse response, @PathVariable int row) throws IOException {
-        Workbook workBook = excelService.export1_1_0(row);
-        WebUtil.writeExcel(workBook, "注解导出图片示例1_1_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
+        Workbook workBook = excelService.export2_0_0(row);
+        WebUtil.writeExcel(workBook, "注解导出图片示例2_0_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 }

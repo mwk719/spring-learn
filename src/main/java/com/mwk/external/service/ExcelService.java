@@ -49,7 +49,7 @@ public class ExcelService {
         return workBook;
     }
 
-    public Workbook export1_1_0(int row) {
+    public Workbook export2_0_0(int row) {
         TimeInterval timer = DateUtil.timer();
         Workbook workBook = Workbook.getInstance();
         Sheet sheet = workBook.createSheet("测试");
@@ -65,7 +65,7 @@ public class ExcelService {
             userPicture.setName("测试-" + r);
             userPicture.setPicture(IMG_PATH_1);
             // 根据图片数组和要获取图片的数量，随机从图片数组中取出若干
-            userPicture.setPictures(getPictures(files, 9));
+            userPicture.setPictures(getPictures(files, new Random().nextInt(10)));
             sheet.createRow(userPicture);
             if(r == 0){
                 sheet.getRow(r).setCellStyle(cellStyle);
