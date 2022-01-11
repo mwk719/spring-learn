@@ -34,4 +34,11 @@ public class ExcelServiceTest {
         WebUtil.writeExcelTest(workBook, "注解导出图片示例2_0_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"),
                 ExcelService.TEMP_PATH);
     }
+
+    @Test
+    public void export2_1_0Test() {
+        Workbook workBook = excelService.export2_1_0(101);
+        WebUtil.writeExcelTest(workBook, "注解导出图片示例2_1_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"),
+                ExcelService.TEMP_PATH);
+    }
 }
