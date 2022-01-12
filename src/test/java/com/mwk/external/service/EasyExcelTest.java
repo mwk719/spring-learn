@@ -1,17 +1,15 @@
 package com.mwk.external.service;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
 import com.mwk.entity.ImageDemoData;
+import com.mwk.external.base.BaseExcelParam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -21,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EasyExcelTest extends BaseExcelService {
+public class EasyExcelTest extends BaseExcelParam {
 
     /**
      * 图片导出
@@ -34,15 +32,15 @@ public class EasyExcelTest extends BaseExcelService {
     public void imageWrite() throws Exception {
         String fileName = TEMP_PATH.concat("EasyExcel_导出excel示例").concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx");
         List<ImageDemoData> list =  ListUtils.newArrayList();
-        ImageDemoData imageDemoData;
-        for (int i = 0; i < 100; i++) {
-            imageDemoData = new ImageDemoData();
-            list.add(imageDemoData);
-            imageDemoData.setByteArray(FileUtils.readFileToByteArray(new File(IMG_PATH_1)));
-            imageDemoData.setFile(new File(IMG_PATH_2));
-            imageDemoData.setString(IMG_PATH_3);
-            imageDemoData.setUrl(new URL(getUrl()));
-        }
+//        ImageDemoData imageDemoData;
+//        for (int i = 0; i < 100; i++) {
+//            imageDemoData = new ImageDemoData();
+//            list.add(imageDemoData);
+//            imageDemoData.setByteArray(FileUtils.readFileToByteArray(new File(IMG_PATH_1)));
+//            imageDemoData.setFile(new File(IMG_PATH_2));
+//            imageDemoData.setString(IMG_PATH_3);
+//            imageDemoData.setUrl(new URL(getUrl()));
+//        }
         // 写入数据
         EasyExcel.write(fileName, ImageDemoData.class).sheet().doWrite(list);
     }

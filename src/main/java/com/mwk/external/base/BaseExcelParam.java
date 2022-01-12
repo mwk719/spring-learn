@@ -1,4 +1,4 @@
-package com.mwk.external.service;
+package com.mwk.external.base;
 
 import cn.hutool.core.io.FileUtil;
 
@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * 操作excel参数
+ *
  * @author MinWeikai
  * @date 2022/1/7 18:09
  */
-public class BaseExcelService {
+public class BaseExcelParam {
 
     protected static final String CURRENT_PATH = "E:\\test\\";
     protected static final String TEMP_PATH = CURRENT_PATH + "excel\\";
@@ -45,7 +47,7 @@ public class BaseExcelService {
 
     /**
      * 根据图片数组和要获取图片的数量，随机从图片数组中取出若干
-     * @param files 图片数组
+     *
      * @param getCount 获取图片的数量
      * @return
      */

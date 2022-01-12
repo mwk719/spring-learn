@@ -1,15 +1,18 @@
 package com.mwk.external.controller;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.util.ListUtils;
 import com.ibiz.excel.picture.support.model.CellStyle;
 import com.ibiz.excel.picture.support.model.Sheet;
 import com.ibiz.excel.picture.support.model.Workbook;
 import com.ibiz.excel.picture.support.util.WebUtil;
 import com.mwk.entity.ImageDemoData;
 import com.mwk.entity.UserPicture;
-import com.mwk.external.service.BaseExcelService;
-import com.mwk.external.service.ExcelService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mwk.external.base.BaseExcelParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * excel操作接口
@@ -29,10 +34,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/excel")
-public class ExcelController extends BaseExcelService {
+public class ExcelController extends BaseExcelParam {
 
-    @Autowired
-    private ExcelService excelService;
+    private static final Logger log = LoggerFactory.getLogger(ExcelController.class);
 
     /**
      * 使用接口下载excel示例
@@ -48,7 +52,17 @@ public class ExcelController extends BaseExcelService {
      */
     @GetMapping("/export/1_0_4/{row}")
     public void export1_0_4(HttpServletResponse response, @PathVariable int row) throws IOException {
-        Workbook workBook = excelService.export1_0_4(row);
+        Workbook workBook = Workbook.getInstance();
+        Sheet sheet = workBook.createSheet("测试");
+        UserPicture u1;
+        for (int r = 0; r < row; r++) {
+            u1 = new UserPicture();
+            u1.setAge(15);
+            u1.setName("测试-" + r);
+            u1.setPicture(IMG_PATH_1);
+            u1.setHeaderPicture(IMG_PATH_2);
+            sheet.createRow(u1);
+        }
         WebUtil.writeExcel(workBook, "注解导出图片示例1_0_4".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 
@@ -67,7 +81,24 @@ public class ExcelController extends BaseExcelService {
      */
     @GetMapping("/export/2_0_0/{row}")
     public void export2_0_0(HttpServletResponse response, @PathVariable int row) throws IOException {
-        Workbook workBook = excelService.export2_0_0(row);
+        TimeInterval timer = DateUtil.timer();
+        Workbook workBook = Workbook.getInstance();
+        Sheet sheet = workBook.createSheet("测试");
+        UserPicture userPicture;
+        for (int r = 0; r < row; r++) {
+            userPicture = new UserPicture();
+            userPicture.setAge(15);
+            userPicture.setName("测试-" + r);
+            userPicture.setPicture(IMG_PATH_1);
+            // 根据图片数组和要获取图片的数量，随机从图片数组中取出若干
+            userPicture.setPictures(getPictures(new Random().nextInt(10)));
+            sheet.createRow(userPicture);
+            if(r == 0){
+                // 给标题行加上背景色，加颜色时，会对字体加粗
+                sheet.getRow(r).setCellStyle(new CellStyle("9AC0CD"));
+            }
+        }
+        log.info("file download cost time : {} 毫秒", timer.interval());
         WebUtil.writeExcel(workBook, "注解导出图片示例2_0_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 
@@ -86,7 +117,28 @@ public class ExcelController extends BaseExcelService {
      */
     @GetMapping("/export/2_1_0/{row}")
     public void export2_1_0(HttpServletResponse response, @PathVariable int row) throws IOException {
-        Workbook workBook = excelService.export2_1_0(row);
+        // 测试使用占用最小内存 1
+        Workbook workBook = Workbook.getInstance(1);
+        Sheet sheet = workBook.createSheet("测试");
+        // 给标题行加上背景色，加颜色时，会对字体加粗
+        sheet.addCellStyle(new CellStyle(0, "66cc66"));
+        List<UserPicture> list = new ArrayList<>();
+        UserPicture userPicture;
+        for (int r = 0; r < row; r++) {
+            userPicture = new UserPicture();
+            userPicture.setAge(15);
+            userPicture.setName("测试-" + r);
+            // 导出本地单张图片
+            userPicture.setPicture(IMG_PATH_1);
+            // 导出url单张图片
+            userPicture.setHeaderPicture(getUrl());
+            // 导出本地图片集合
+            userPicture.setPictures(getPictures(5));
+            // 导出url图片集合
+            userPicture.setUrlPictures(getUrls(5));
+            list.add(userPicture);
+        }
+        sheet.write(UserPicture.class).createRow(list);
         WebUtil.writeExcel(workBook, "注解导出图片示例2_1_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 
@@ -119,6 +171,7 @@ public class ExcelController extends BaseExcelService {
         Sheet sheet = workBook.createSheet("测试");
         // 给标题行加上背景色，加颜色时，会对字体加粗
         sheet.addCellStyle(new CellStyle(0, "66cc66"));
+        List<UserPicture> list = new ArrayList<>();
         UserPicture userPicture;
         for (int r = 0; r < row; r++) {
             userPicture = new UserPicture();
@@ -133,8 +186,9 @@ public class ExcelController extends BaseExcelService {
             // 导出url图片集合
             userPicture.setUrlPictures(Arrays.asList("https://portrait.gitee.com/uploads/avatars/user/552/1657608_mwk719_1641537497.png",
                     "https://img2.baidu.com/it/u=2602880481,728201544&fm=26&fmt=auto"));
-            sheet.createRow(userPicture);
+            list.add(userPicture);
         }
+        sheet.write(UserPicture.class).createRow(list);
         WebUtil.writeExcel(workBook, "最新使用示例代码导出".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 
@@ -153,7 +207,16 @@ public class ExcelController extends BaseExcelService {
      */
     @GetMapping("/export/easyexcel/{row}")
     public void exportEasyExcel(HttpServletResponse response, @PathVariable int row) throws IOException {
-        List<ImageDemoData> list = excelService.exportEasyExcel(row);
+        List<ImageDemoData> list =  ListUtils.newArrayList();
+        ImageDemoData imageDemoData;
+        for (int i = 0; i < row; i++) {
+            imageDemoData = new ImageDemoData();
+            list.add(imageDemoData);
+//            imageDemoData.setByteArray(FileUtils.readFileToByteArray(new File(IMG_PATH_1)));
+//            imageDemoData.setFile(new File(IMG_PATH_2));
+            imageDemoData.setString(IMG_PATH_3);
+//            imageDemoData.setUrl(new URL(getUrl()));
+        }
         // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
