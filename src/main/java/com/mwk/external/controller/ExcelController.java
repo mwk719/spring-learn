@@ -5,6 +5,7 @@ import cn.hutool.core.date.TimeInterval;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.ListUtils;
 import com.ibiz.excel.picture.support.model.CellStyle;
+import com.ibiz.excel.picture.support.model.Font;
 import com.ibiz.excel.picture.support.model.Sheet;
 import com.ibiz.excel.picture.support.model.Workbook;
 import com.ibiz.excel.picture.support.util.WebUtil;
@@ -142,6 +143,64 @@ public class ExcelController extends BaseExcelParam {
         WebUtil.writeExcel(workBook, "注解导出图片示例2_1_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 
+    /**
+     * 使用接口下载excel示例
+     * http://localhost:8080/excel/export/2_2_0/250
+     * 版本支持
+     * <dependency>
+     * 			<groupId>top.minwk</groupId>
+     * 			<artifactId>excel-x</artifactId>
+     * 			<version>2.2.0</version>
+     * 		</dependency>
+     *
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/export/2_2_0/{row}")
+    public void export2_2_0(HttpServletResponse response, @PathVariable int row) throws IOException {
+        // 测试使用占用最小内存 1
+        Workbook workBook = Workbook.getInstance();
+        Sheet sheet = workBook.createSheet("测试");
+        // 给第一行加上背景色和字体配置
+        CellStyle cellStyle = new CellStyle(0, "F0F0F0");
+        Font font = Font.build()
+                .setFontName("黑体")
+                .setFontHeightInPoints((short) 15)
+                .setColor("FF4040")
+                .setBoldWeight(true);
+        cellStyle.setFont(font);
+        sheet.addCellStyle(cellStyle);
+
+        // 给第三行字体放大到18
+        CellStyle cellStyle1 = new CellStyle();
+        Font font1 = new Font();
+        font1.setFontHeightInPoints((short) 18);
+        cellStyle1.setRowNumber(2);
+        cellStyle1.setFont(font1);
+        sheet.addCellStyle(cellStyle1);
+
+        // 给第五行加上背景色
+        sheet.addCellStyle(new CellStyle(4, "AB82FF"));
+
+        List<UserPicture> list = new ArrayList<>();
+        UserPicture userPicture;
+        for (int r = 0; r < row; r++) {
+            userPicture = new UserPicture();
+            userPicture.setAge(15);
+            userPicture.setName("测试-" + r);
+            // 导出本地单张图片
+            userPicture.setPicture(IMG_PATH_1);
+            // 导出url单张图片
+            userPicture.setHeaderPicture(getUrl());
+            // 导出本地图片集合
+            userPicture.setPictures(getPictures(new Random().nextInt(5)));
+            // 导出url图片集合
+            userPicture.setUrlPictures(getUrls(5));
+            list.add(userPicture);
+        }
+        sheet.write(UserPicture.class).createRow(list);
+        WebUtil.writeExcel(workBook, "ExportExample2_2_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
+    }
 
     /**
      * 最新使用示例代码导出excel示例
