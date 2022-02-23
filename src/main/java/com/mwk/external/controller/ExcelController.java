@@ -4,12 +4,11 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.ListUtils;
-import com.ibiz.excel.picture.support.model.CellStyle;
-import com.ibiz.excel.picture.support.model.Font;
-import com.ibiz.excel.picture.support.model.Sheet;
-import com.ibiz.excel.picture.support.model.Workbook;
+import com.ibiz.excel.picture.support.model.*;
+import com.ibiz.excel.picture.support.processor.ExcelTableProcessor;
 import com.ibiz.excel.picture.support.util.WebUtil;
 import com.mwk.entity.ImageDemoData;
+import com.mwk.entity.Student;
 import com.mwk.entity.UserPicture;
 import com.mwk.external.base.BaseExcelParam;
 import org.slf4j.Logger;
@@ -22,10 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * excel操作接口
@@ -284,5 +280,58 @@ public class ExcelController extends BaseExcelParam {
         }
         sheet.write(UserPicture.class).createRow(list);
         WebUtil.writeExcel(workBook, "ExportExample2_2_0".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
+    }
+
+    /**
+     * 动态配置表头excel导出
+     * http://localhost:8080/excel/export/dynamic-config-header
+     * 版本支持
+     * <dependency>
+     * 			<groupId>top.minwk</groupId>
+     * 			<artifactId>excel-x</artifactId>
+     * 			<version>2.3.0</version>
+     * 		</dependency>
+     *
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/export/dynamic-config-header")
+    public void exportDynamicConfigHeader(HttpServletResponse response) throws IOException {
+        // 模拟需要导出的数据集合
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("李四", 16, null, null, 0));
+        students.add(new Student("张三", 17, null,
+                Arrays.asList("https://portrait.gitee.com/uploads/avatars/user/552/1657608_mwk719_1641537497.png",
+                "https://img2.baidu.com/it/u=2602880481,728201544&fm=26&fmt=auto"), 1));
+        students.add(new Student("王五", 15, IMG_PATH_1, null, 2));
+
+        // 配置导出excel的表头、顺序、对应导出的数据集合的字段、是否是图片、单元格宽度等
+        List<BizExcelRel> excels = new ArrayList<>();
+        excels.add(new BizExcelRel("姓名", "name", 2));
+        excels.add(new BizExcelRel("年龄", "age", 3));
+        excels.add(new BizExcelRel("表现", "performance", 4));
+        excels.add(new BizExcelRel("头像", "headPicture", 5, true, 20));
+        excels.add(new BizExcelRel("相册", "album", 6, true));
+
+        // 创建excel
+        Workbook workBook = Workbook.getInstance(100);
+        Sheet sheet = workBook.createSheet("测试");
+        // 创建样式
+        CellStyle cellStyle = new CellStyle(0, "F0F0F0");
+        // 创建数据字典
+        Map<String, String> performanceMap = new HashMap<>(3);
+        performanceMap.put("0", "一般");
+        performanceMap.put("1", "良好");
+        performanceMap.put("2", "优秀");
+
+        // 构建sheet
+        ExcelTableProcessor.sheet(sheet)
+                // 添加样式
+                .addCellStyle(cellStyle)
+                // 添加对应属性字段的数据字典
+                .registryEnumMap("performance", performanceMap)
+                // 构建excel
+                .buildExcel(excels, students);
+        WebUtil.writeExcel(workBook, "ExportExampleDynamicConfigHeader".concat(String.valueOf(System.currentTimeMillis())).concat(".xlsx"), response);
     }
 }

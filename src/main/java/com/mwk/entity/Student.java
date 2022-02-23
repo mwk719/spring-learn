@@ -1,5 +1,6 @@
 package com.mwk.entity;
 
+import com.ibiz.excel.picture.support.model.BizExcelPojoInterface;
 import com.mwk.function.sort.AbstractComparableMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Student extends AbstractComparableMap<Student> {
+public class Student extends AbstractComparableMap<Student> implements BizExcelPojoInterface {
 
 	public Student() {
 	}
@@ -37,6 +38,14 @@ public class Student extends AbstractComparableMap<Student> {
 		this.subjects = subjects;
 	}
 
+	public Student(String name, Integer age, String headPicture, List<String> album, Integer performance) {
+		this.name = name;
+		this.age = age;
+		this.headPicture = headPicture;
+		this.album = album;
+		this.performance = performance;
+	}
+
 	private String name;
 
 	private Date date;
@@ -46,6 +55,20 @@ public class Student extends AbstractComparableMap<Student> {
 	private Schoolbag bag;
 
 	private List<Subject> subjects;
+
+	private Integer age;
+
+	private String headPicture;
+
+	/**
+	 * 相册
+	 */
+	private List<String> album;
+
+	/**
+	 * 表现 0一般；1良好；2优秀
+	 */
+	private Integer performance;
 
 	@Override
 	public void buildCompareMap(Student o) {

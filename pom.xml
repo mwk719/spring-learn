@@ -16,7 +16,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<excel-x.version>2.2.0</excel-x.version>
+		<excel-x.version>2.3.0</excel-x.version>
 		<easyexcel.version>3.0.5</easyexcel.version>
 		<poi.version>4.1.2</poi.version>
 	</properties>
