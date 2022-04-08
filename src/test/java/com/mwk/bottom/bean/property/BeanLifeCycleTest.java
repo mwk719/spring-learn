@@ -14,7 +14,7 @@ public class BeanLifeCycleTest extends UnitTestBase {
     }
 
     @Test
-    public void sayTest() {
+    public void Test() {
        super.getBean("beanLifeCycle");
     }
 }

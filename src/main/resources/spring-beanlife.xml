@@ -5,7 +5,12 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd"
         default-init-method="defaultStart" default-destroy-method="defaultStop">
 
+	<bean id="beanLifeCycle" class="com.mwk.bottom.bean.property.BeanLifeCycle"/>
+
+	<!--
+	自定义初始化方法和销毁方法
 	<bean id="beanLifeCycle" class="com.mwk.bottom.bean.property.BeanLifeCycle"
-		init-method="start" destroy-method="stop"></bean>
+	init-method="start" destroy-method="stop"/>
+	-->
 
 </beans>
