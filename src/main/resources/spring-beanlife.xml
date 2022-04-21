@@ -2,15 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd"
-        default-init-method="defaultStart" default-destroy-method="defaultStop">
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="beanLifeCycle" class="com.mwk.bottom.bean.property.BeanLifeCycle"/>
+<!--	<bean id="beanLifeCycle" class="com.mwk.bottom.bean.property.BeanLifeCycle"/>-->
 
-	<!--
-	自定义初始化方法和销毁方法
+	<!--自定义初始化方法和销毁方法-->
 	<bean id="beanLifeCycle" class="com.mwk.bottom.bean.property.BeanLifeCycle"
-	init-method="start" destroy-method="stop"/>
-	-->
+	init-method="customStart" destroy-method="customStop"/>
+
 
 </beans>

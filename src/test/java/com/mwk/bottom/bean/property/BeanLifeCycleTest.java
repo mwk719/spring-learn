@@ -15,6 +15,8 @@ public class BeanLifeCycleTest extends UnitTestBase {
 
     @Test
     public void Test() {
-       super.getBean("beanLifeCycle");
+//        BeanLifeCycle beanLifeCycle = super.getBean("beanLifeCycle");
+        BeanLifeCycle beanLifeCycle = new BeanLifeCycle();
+        beanLifeCycle.setName("Spring框架中Bean的生命周期");
     }
 }
