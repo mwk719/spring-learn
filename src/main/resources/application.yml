@@ -6,4 +6,7 @@ proxy:
   servlet_url: /proxybaidu/*
   target_url: https://www.baidu.com
 
+netty:
+  port: 8081
+
 #  其他demo
