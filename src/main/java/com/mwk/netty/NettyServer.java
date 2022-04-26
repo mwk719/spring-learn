@@ -19,6 +19,11 @@ import java.nio.charset.Charset;
 /**
  * Netty服务   服务启动监听器
  * 服务启动后，可使用网络调试助手软件进行TCP连接调试
+ * 资源路径 https://gitee.com/mwk719/spring-learn/blob/master/src/main/resources/software/NetAssist.exe
+ * 使用图示
+ * https://i.bmp.ovh/imgs/2022/04/26/b06a93063af255ea.png
+ * 服务端接收图示
+ * https://i.bmp.ovh/imgs/2022/04/26/9c3db93dbd0d6a31.png
  */
 @Slf4j
 @Component
