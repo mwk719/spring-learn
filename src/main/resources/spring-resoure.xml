@@ -4,6 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="myResource" class="com.mwk.bottom.bean.resource.MyResource"></bean>
+	<bean id="myResource" class="com.mwk.bottom.bean.resource.MyResource"/>
 
 </beans>

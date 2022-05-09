@@ -8,6 +8,6 @@
     2. "prototype" 每次请求都创建实例
     
      -->
-	<bean id="beanScope" class="com.mwk.bottom.bean.property.BeanScope" scope="prototype"></bean>
+	<bean id="beanScope" class="com.mwk.bottom.bean.property.BeanScope" scope="prototype"/>
 
 </beans>

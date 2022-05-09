@@ -5,8 +5,8 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd"
         default-autowire="constructor">
 
-	<bean id="autowiringService" class="com.mwk.bottom.bean.autowiring.AutowiringServiceImpl"></bean>
+	<bean id="autowiringService" class="com.mwk.bottom.bean.autowiring.AutowiringServiceImpl"/>
 
-	<bean id="autowiringDao" class="com.mwk.bottom.bean.autowiring.AutowiringDao"></bean>
+	<bean id="autowiringDao" class="com.mwk.bottom.bean.autowiring.AutowiringDao"/>
 
 </beans>

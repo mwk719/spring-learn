@@ -5,10 +5,10 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="personService" class="com.mwk.bottom.ioc.service.PersonServiceImpl">
-		<constructor-arg name="personDao" ref="personDao"></constructor-arg>
+	    <constructor-arg name="personDao" ref="personDao"/>
 	</bean>
-	
-	<bean id="personDao" class="com.mwk.bottom.ioc.dao.PersonDaoImpl"></bean>
+
+	<bean id="personDao" class="com.mwk.bottom.ioc.dao.PersonDaoImpl"/>
 
 	<!-- <bean id="injectionDAO" class="com.imooc.ioc.injection.dao.InjectionDAOImpl"></bean> -->
 
